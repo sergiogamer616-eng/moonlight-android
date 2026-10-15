@@ -5,6 +5,9 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -34,3 +37,15 @@ jobs:
           name: Moonlight-IA
           path: app/build/outputs/apk/nonRoot/release/*.apk
           if-no-files-found: error
+
+      # Latest build as a GitHub release, easy to download from the phone
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/nonRoot/release/*.apk Moonlight-IA.apk
+          gh release delete ia-latest --yes --cleanup-tag || true
+          gh release create ia-latest Moonlight-IA.apk \
+            --title "Moonlight IA (última compilación)" \
+            --notes "Compilado desde ${GITHUB_SHA::7}. Descarga Moonlight-IA.apk e instálala en el móvil." \
+            --target "$GITHUB_SHA"
