@@ -1,0 +1,33 @@
+name: Build Moonlight IA
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install NDK
+        run: sdkmanager --install "ndk;29.0.14206865"
+
+      - name: Build APK
+        run: ./gradlew --no-daemon assembleNonRootRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Moonlight-IA
+          path: app/build/outputs/apk/nonRoot/release/*.apk
+          if-no-files-found: error

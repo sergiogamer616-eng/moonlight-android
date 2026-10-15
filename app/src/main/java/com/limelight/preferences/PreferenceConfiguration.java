@@ -7,6 +7,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.Display;
 
+import com.limelight.binding.video.postprocess.PostProcessor;
 import com.limelight.nvstream.jni.MoonBridge;
 
 public class PreferenceConfiguration {
@@ -61,6 +62,7 @@ public class PreferenceConfiguration {
     private static final String TOUCHSCREEN_TRACKPAD_PREF_STRING = "checkbox_touchscreen_trackpad";
     private static final String LATENCY_TOAST_PREF_STRING = "checkbox_enable_post_stream_toast";
     private static final String FRAME_PACING_PREF_STRING = "frame_pacing";
+    private static final String POST_PROCESS_PREF_STRING = "list_postprocess";
     private static final String ABSOLUTE_MOUSE_MODE_PREF_STRING = "checkbox_absolute_mouse_mode";
     private static final String ENABLE_AUDIO_FX_PREF_STRING = "checkbox_enable_audiofx";
     private static final String REDUCE_REFRESH_RATE_PREF_STRING = "checkbox_reduce_refresh_rate";
@@ -101,6 +103,7 @@ public class PreferenceConfiguration {
     private static final String DEFAULT_AUDIO_CONFIG = "2"; // Stereo
     private static final boolean DEFAULT_LATENCY_TOAST = false;
     private static final String DEFAULT_FRAME_PACING = "latency";
+    private static final String DEFAULT_POST_PROCESS = "off";
     private static final boolean DEFAULT_ABSOLUTE_MOUSE_MODE = false;
     private static final boolean DEFAULT_ENABLE_AUDIO_FX = false;
     private static final boolean DEFAULT_REDUCE_REFRESH_RATE = false;
@@ -148,6 +151,7 @@ public class PreferenceConfiguration {
     public boolean touchscreenTrackpad;
     public MoonBridge.AudioConfiguration audioConfiguration;
     public int framePacing;
+    public int postProcessMode;
     public boolean absoluteMouseMode;
     public boolean enableAudioFx;
     public boolean reduceRefreshRate;
@@ -399,6 +403,20 @@ public class PreferenceConfiguration {
         }
     }
 
+    private static int getPostProcessValue(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        switch (prefs.getString(POST_PROCESS_PREF_STRING, DEFAULT_POST_PROCESS)) {
+            case "sharpen":
+                return PostProcessor.MODE_SHARPEN;
+            case "anime4k-light":
+                return PostProcessor.MODE_A4K_LIGHT;
+            case "anime4k-quality":
+                return PostProcessor.MODE_A4K_QUALITY;
+            default:
+                return PostProcessor.MODE_OFF;
+        }
+    }
+
     private static AnalogStickForScrolling getAnalogStickForScrollingValue(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -561,6 +579,7 @@ public class PreferenceConfiguration {
 
         config.videoFormat = getVideoFormatValue(context);
         config.framePacing = getFramePacingValue(context);
+        config.postProcessMode = getPostProcessValue(context);
 
         config.analogStickForScrolling = getAnalogStickForScrollingValue(context);
 

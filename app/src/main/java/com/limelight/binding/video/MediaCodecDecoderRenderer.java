@@ -16,6 +16,7 @@ import org.jcodec.codecs.h264.io.model.VUIParameters;
 import com.limelight.BuildConfig;
 import com.limelight.LimeLog;
 import com.limelight.R;
+import com.limelight.binding.video.postprocess.PostProcessor;
 import com.limelight.nvstream.av.video.VideoDecoderRenderer;
 import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.PreferenceConfiguration;
@@ -35,6 +36,7 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Range;
 import android.view.Choreographer;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 
 public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements Choreographer.FrameCallback {
@@ -68,6 +70,8 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
     private int initialWidth, initialHeight;
     private int videoFormat;
     private SurfaceHolder renderTarget;
+    private PostProcessor postProcessor;
+    private boolean postProcessTried;
     private volatile boolean stopping;
     private CrashListener crashListener;
     private boolean reportedCrash;
@@ -267,6 +271,26 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
         }
 
         return decoderInfo;
+    }
+
+    // Surface the decoder renders into: the window, or the post-processor's input when enabled
+    private Surface getDecoderOutputSurface() {
+        if (!postProcessTried) {
+            postProcessTried = true;
+            if (prefs.postProcessMode != PostProcessor.MODE_OFF) {
+                if ((getActiveVideoFormat() & MoonBridge.VIDEO_FORMAT_MASK_10BIT) != 0) {
+                    LimeLog.info("PostProcess: disabled for HDR/10-bit streams");
+                }
+                else {
+                    postProcessor = PostProcessor.create(context, renderTarget.getSurface(),
+                            initialWidth, initialHeight, prefs.postProcessMode);
+                    if (postProcessor == null) {
+                        LimeLog.warning("PostProcess: unavailable, using direct output");
+                    }
+                }
+            }
+        }
+        return postProcessor != null ? postProcessor.getInputSurface() : renderTarget.getSurface();
     }
 
     public void setRenderTarget(SurfaceHolder renderTarget) {
@@ -516,7 +540,7 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
 
         LimeLog.info("Configuring with format: "+format);
 
-        videoDecoder.configure(format, renderTarget.getSurface(), null, 0);
+        videoDecoder.configure(format, getDecoderOutputSurface(), null, 0);
 
         configuredFormat = format;
 
@@ -1248,6 +1272,12 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
     @Override
     public void cleanup() {
         videoDecoder.release();
+
+        // The decoder must be gone before the post-processor's input surface is destroyed
+        if (postProcessor != null) {
+            postProcessor.release();
+            postProcessor = null;
+        }
     }
 
     @Override

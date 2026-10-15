@@ -251,6 +251,12 @@
     <string name="fps_60">60 FPS</string>
     <string name="fps_90">90 FPS</string>
     <string name="title_frame_pacing">Ritmo de cuadros por segundo en video</string>
+    <string name="title_postprocess">Mejora de imagen</string>
+    <string name="summary_postprocess">Procesa el vídeo en la GPU del móvil para recuperar nitidez con poco bitrate. Gasta más batería y añade unos milisegundos de latencia. Se desactiva en streams HDR.</string>
+    <string name="postprocess_off">Desactivada</string>
+    <string name="postprocess_sharpen">Nitidez (Snapdragon GSR)</string>
+    <string name="postprocess_a4k_light">Restauración IA, ligera (Anime4K S)</string>
+    <string name="postprocess_a4k_quality">Restauración IA, calidad (Anime4K M)</string>
     <string name="resolution_prefix_native_portrait">(Retrato)</string>
     <string name="frame_conversion_error">El PC anfitrión ha reportado un error fatal en el codificador de video.
 \n

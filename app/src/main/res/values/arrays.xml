@@ -120,6 +120,18 @@
         <item>@string/pacing_balanced_alt</item>
         <item>@string/pacing_smoothness</item>
     </string-array>
+    <string-array name="postprocess_names">
+        <item>@string/postprocess_off</item>
+        <item>@string/postprocess_sharpen</item>
+        <item>@string/postprocess_a4k_light</item>
+        <item>@string/postprocess_a4k_quality</item>
+    </string-array>
+    <string-array name="postprocess_values" translatable="false">
+        <item>off</item>
+        <item>sharpen</item>
+        <item>anime4k-light</item>
+        <item>anime4k-quality</item>
+    </string-array>
     <string-array name="video_frame_pacing_values" translatable="false">
         <item>latency</item>
         <item>balanced</item>

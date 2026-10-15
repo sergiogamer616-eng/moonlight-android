@@ -292,6 +292,12 @@
     <string name="videoformat_h264always">Prefer H.264</string>
 
     <string name="title_frame_pacing">Video frame pacing</string>
+    <string name="title_postprocess">Image enhancement</string>
+    <string name="summary_postprocess">Post-process the video on the GPU to recover clarity at low bitrates. Uses more battery and adds a few milliseconds of latency. Disabled for HDR streams.</string>
+    <string name="postprocess_off">Off</string>
+    <string name="postprocess_sharpen">Sharpen (Snapdragon GSR)</string>
+    <string name="postprocess_a4k_light">AI restore, light (Anime4K S)</string>
+    <string name="postprocess_a4k_quality">AI restore, quality (Anime4K M)</string>
     <string name="summary_frame_pacing">Specify how to balance video latency and smoothness</string>
     <string name="pacing_latency">Prefer lowest latency</string>
     <string name="pacing_balanced">Balanced</string>

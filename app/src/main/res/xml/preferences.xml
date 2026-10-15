@@ -36,6 +36,13 @@
             android:entryValues="@array/video_frame_pacing_values"
             android:summary="@string/summary_frame_pacing"
             android:defaultValue="latency" />
+        <ListPreference
+            android:key="list_postprocess"
+            android:title="@string/title_postprocess"
+            android:entries="@array/postprocess_names"
+            android:entryValues="@array/postprocess_values"
+            android:summary="@string/summary_postprocess"
+            android:defaultValue="off" />
         <CheckBoxPreference
             android:key="checkbox_stretch_video"
             android:title="@string/title_checkbox_stretch_video"

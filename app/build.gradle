@@ -11,7 +11,7 @@ android {
         minSdk 21
         targetSdk 36
 
-        versionName "12.2"
+        versionName "12.2-ia"
         versionCode = 315
 
         // Generate native debug symbols to allow Google Play to symbolicate our native crashes
@@ -81,6 +81,16 @@ android {
         }
     }
 
+    // Moonlight IA: fixed signing key so updates install over the previous build
+    signingConfigs {
+        ia {
+            storeFile file("../ci/moonlight-ia.keystore")
+            storePassword System.getenv("IA_KEYSTORE_PASSWORD") ?: "moonlight-ia"
+            keyAlias "moonlight-ia"
+            keyPassword System.getenv("IA_KEYSTORE_PASSWORD") ?: "moonlight-ia"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -118,9 +128,11 @@ android {
             // is to please change the applicationId before you publish.
             //
             // TL;DR: Leave the following line alone!
-            applicationIdSuffix ".unofficial"
-            resValue "string", "app_label", "Moonlight"
-            resValue "string", "app_label_root", "Moonlight (Root)"
+            // Moonlight IA fork: own application ID so it installs next to the official app
+            applicationIdSuffix ".ia"
+            resValue "string", "app_label", "Moonlight IA"
+            resValue "string", "app_label_root", "Moonlight IA (Root)"
+            signingConfig signingConfigs.ia
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
